@@ -55,7 +55,7 @@ function pendulum(values) {
             // comparing the right to the left, but "swapping" signs every other time :P .
            const swapIndex =  (returnValue[leftIndex] < returnValue[rightIndex]) === moveRightIndex
  
-            if (leftIndex !== rightIndex && swapIndex) {
+            if (returnValue[leftIndex] !== returnValue[rightIndex] && leftIndex !== rightIndex && swapIndex) {
                 swapIndices(leftIndex, rightIndex)
                 sortCompleted = false; // if we did a swap we still need another loop.
             };
