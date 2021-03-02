@@ -27,8 +27,8 @@ const swings = (arrayLength) => ({
     leftIncrement: 1,
   },
   insideToOutside: {
-    initialRightIndex: Math.round(arrayLength / 2 + 0.3),
-    initialLeftIndex: Math.round(arrayLength / 2),
+    initialRightIndex: Math.round((arrayLength / 2) + .3),
+    initialLeftIndex:  Math.round((arrayLength / 2) - .3),
     rightIncrement: 1,
     leftIncrement: -1,
   },
