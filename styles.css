@@ -1,0 +1,9 @@
+h4 {
+  display: grid;
+  grid-template-columns: 15% 20%;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 30% 30%;
+}
