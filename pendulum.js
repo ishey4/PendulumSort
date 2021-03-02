@@ -1,7 +1,7 @@
 
 // The impression I got, was that the pendulum started swinging from the right side of the array (largest number) to the left side,
 // and settled in the middle. The exercise on code kata the pendulum starts in the middle (smallest number) and swings outward to the right first.
-// This demo has be modifiable to work for all variations.
+// This demo has be modifiable to work for all.
 //
 // *** In the example the input array is [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] ***
 // This solution uses a modified bubble sort. Instead of sorting the elements against the neighbor, we sort them with the
@@ -19,14 +19,14 @@
 //
 //   onto the code!
 
-const swings = (arrayLength) => ({
-  outsideToInside: {
+const getSwingDirection = (arrayLength) => ({
+  end: {
     initialRightIndex: arrayLength,
     initialLeftIndex: 0,
     rightIncrement: -1,
     leftIncrement: 1,
   },
-  insideToOutside: {
+  center: {
     initialRightIndex: Math.round((arrayLength / 2) + .3),
     initialLeftIndex:  Math.round((arrayLength / 2) - .3),
     rightIncrement: 1,
@@ -34,34 +34,21 @@ const swings = (arrayLength) => ({
   },
 });
 
-const getCadence = (arrayLength) => ({
-  startRight: {
-    ...swings(arrayLength).outsideToInside,
-    swingRight: 0,
-  },
-  startLeft: {
-    ...swings(arrayLength).outsideToInside,
-    swingRight: -1,
-  },
-  startCenterThenRight: {
-    ...swings(arrayLength).insideToOutside,
-    swingRight: 0,
-  },
-  startCenterThenLeft: {
-    ...swings(arrayLength).insideToOutside,
-    swingRight: -1,
-  },
-});
+const swingDirectionMap = { 'left': -1, 'right': 0 };
+const sortDirectionMap = { asc: false, desc: true };
 
 /**
  *
  * @param {*} values Array of numbers to sort
- * @param {*} getCadence startRight | startLeft | startCenterThenRight | startCenterThenLeft
- * @param {*} startWithLargestNumber Sort from largest to smallest
+ * @param {*} startFrom end | middle
+ * @param {*} sortDirectionMap asc | desc
+ * @param {*} swingDirection right | left
  */
-function pendulum(values, startWithLargestNumber, cadence) {
+function pendulum(values, {sortDirection, startFrom, swingDirection}) {
   const returnValue = [...values]; // it is bad practice to mutate your input!
-
+  const localSwingDirection = swingDirectionMap[swingDirection]
+  const localSortDirection = sortDirectionMap[sortDirection]
+    
   const swapIndices = (indexA, indexB) => {
     [returnValue[indexA], returnValue[indexB]] = [returnValue[indexB], returnValue[indexA]];
   };
@@ -74,15 +61,14 @@ function pendulum(values, startWithLargestNumber, cadence) {
       initialLeftIndex: leftIndex, // were we start distributing the numbers from the left
       rightIncrement,
       leftIncrement,
-      swingRight,
-    } = getCadence(returnValue.length - 1)[cadence];
+    } = getSwingDirection(returnValue.length - 1)[startFrom];
 
     // setting defaults to start the sorting loop...
     sortCompleted = true; // indicates if any swaps had taken place
 
     // main sorting loop
     for (let index = 0; index < returnValue.length; index++) {
-      const moveRightIndex = !!((index % 2) + swingRight); // toggles between moving the right index and the left index.
+      const moveRightIndex = !!((index % 2) + localSwingDirection); // toggles between moving the right index and the left index.
 
       if (index) {
         // fixes a 0 issue....
@@ -95,7 +81,7 @@ function pendulum(values, startWithLargestNumber, cadence) {
 
       // comparing the right to the left, but "swapping" signs every other time :P .
       const swapIndex =
-        (returnValue[leftIndex] < returnValue[rightIndex] === startWithLargestNumber) ===
+        (returnValue[leftIndex] < returnValue[rightIndex] === localSortDirection) ===
         moveRightIndex;
 
       const indexWithinBounds =
