@@ -1,6 +1,6 @@
-const separateNumbers = (event) => {
-        return event?.target?.value
+const separateNumbers = (inputText) => {
+        return inputText
         ?.split(',')
         ?.map(value => parseInt(value))
         ?.filter((number) => !isNaN(number))
- }
+}
