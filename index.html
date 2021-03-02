@@ -17,38 +17,48 @@
     <h4>
         <span>Input (separated by commas):</span> <input id="textArea"></input>
     </h4>
+    <form id="options">
     <h4>
-        <span>Pendulum Direction:</span>
-        <select id="cadence">
-            <option value="startRight">Start from right</option>
-            <option value="startLeft">Start from left</option>
-            <option value="startCenterThenRight">Start from center swing right</option>
-            <option value="startCenterThenLeft">Start from center swing left</option>
-        </select>
+        <span>Pendulum Starts From:</span>
+        <span class="options">
+            <label><input checked type="radio" value="center" name="startFrom"> Center</label>
+            <label><input type="radio" value="end" name="startFrom"> End</label>
+        </span>
     </h4>
     <h4>
-        <span>Start With:</span>
-        <select id="startWith">
-            <option value="">Smallest Number</option>
-            <option value="1">Largest Number</option>
-        </select>
+        <span>Swing:</span>
+        <span class="options">
+        <label><input checked type="radio" value="right" name="swingDirection">Right</label>
+        <label><input type="radio" value="left" name="swingDirection">Left</label></span>
     </h4>
+    <h4>
+        <span>Sort:</span>
+        <span class="options">
+        <label><input checked type="radio" name="sortDirection" value="asc">Ascending</label>
+        <label><input type="radio" name="sortDirection" value="desc">Descending</label></span>
+    </h4>
+    </form>
     <h4>
         <span>Output:</span> <span id="sortedValues"></span>
     </h4>
     <script>
+        const getFromValuesFn = (obj, field) => { 
+            if (field.checked) obj[field.name] = field.value;
+            return obj;
+        };
+
         const input = document.getElementById('textArea');
         const outputDiv = document.getElementById('sortedValues')
         const eventsToListenFor = ['keyup', 'change']
+        const form = document.getElementById('options');
+        const inputText = document.getElementById("textArea")    
 
         eventsToListenFor.forEach((event) => {
             document.addEventListener(event, (e) => {
-                const cadence = document.getElementById("cadence").value;
-                const startWithLargestNumber = !!document.getElementById("startWith").value
-                const inputText = document.getElementById("textArea").value;
+                const options = Object.values(form).reduce(getFromValuesFn, {})
+                const inputArray = separateNumbers(inputText.value);
 
-                const inputArray = separateNumbers(inputText);
-                const outputArray = pendulum(inputArray, startWithLargestNumber, cadence);
+                const outputArray = pendulum(inputArray, options);
                 outputDiv.innerHTML = outputArray.join(", ")
             })
         });
